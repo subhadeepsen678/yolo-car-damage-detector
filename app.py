@@ -7,8 +7,7 @@ st.title("🚗 Vehicle Damage Detector")
 
 @st.cache_resource
 def load_model():
-    model = YOLO("trained.pt")
-    return model
+    return YOLO("trained.pt")
 
 model = load_model()
 
@@ -19,7 +18,6 @@ if uploaded_file is not None:
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
     results = model(np.array(image))
-
     annotated = results[0].plot()
 
-    st.image(annotated, caption="Detected Damage", use_container_width=True)
+    st.image(annotated, caption="Detection Result", use_container_width=True)
