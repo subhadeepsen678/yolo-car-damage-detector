@@ -1,25 +1,25 @@
 import streamlit as st
 from ultralytics import YOLO
-import numpy as np
 from PIL import Image
+import numpy as np
 
-# Load model
-model = YOLO("trained.pt")
+st.title("🚗 Vehicle Damage Detector")
 
-st.title("🚗 Damage Detection")
+@st.cache_resource
+def load_model():
+    model = YOLO("trained.pt")
+    return model
 
-st.write("Capture an image of the vehicle to detect damage")
+model = load_model()
 
-# camera input
-picture = st.camera_input("Take a picture")
+uploaded_file = st.file_uploader("Upload a car image", type=["jpg","jpeg","png"])
 
-if picture:
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    image = Image.open(picture)
-    img = np.array(image)
-
-    results = model(img)
+    results = model(np.array(image))
 
     annotated = results[0].plot()
 
-    st.image(annotated, caption="Detection Result", use_column_width=True)
+    st.image(annotated, caption="Detected Damage", use_container_width=True)
